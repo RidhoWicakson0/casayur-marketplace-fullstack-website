@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Teams\TeamInvitationController;
@@ -10,6 +11,10 @@ Route::inertia('/', 'welcome')->name('home');
 Route::inertia('/checkout', 'Checkout')->name('checkout');
 Route::post('/checkout/calculate', [CheckoutController::class, 'calculate'])->name('checkout.calculate');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('products', ProductController::class);
+});
 
 Route::prefix('{current_team}')
     ->middleware(['auth', 'verified', EnsureTeamMembership::class])
