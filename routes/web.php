@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Teams\TeamInvitationController;
 use App\Http\Middleware\EnsureTeamMembership;
@@ -7,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome')->name('home');
 Route::inertia('/checkout', 'Checkout')->name('checkout');
+Route::post('/checkout/calculate', [CheckoutController::class, 'calculate'])->name('checkout.calculate');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
 Route::prefix('{current_team}')
     ->middleware(['auth', 'verified', EnsureTeamMembership::class])
