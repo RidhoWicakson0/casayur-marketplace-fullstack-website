@@ -3,11 +3,36 @@ import { useForm } from '@inertiajs/react';
 
 export default function Checkout({ products = [] }) {
     const [cart, setCart] = useState([]);
+    const [distance, setDistance] = useState(null);
+    const poAvailable = new Date().getHours() >= 9 && new Date().getHours() < 12;
     const { data, setData, post, processing, errors } = useForm({
         items: [],
         lat: '',
         lng: '',
     });
+
+    const handleCalculate = async () => {
+        try {
+            const response = await fetch('/checkout/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ lat: data.lat, lng: data.lng })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Gagal menghitung biaya kirim');
+            }
+
+            const result = await response.json();
+            setDistance(result);
+        } catch (err) {
+            alert(err.message);
+        }
+    };
 
     const handleAddToCart = (product) => {
         const existing = cart.find((item) => item.product_id === product.id);
@@ -88,7 +113,8 @@ export default function Checkout({ products = [] }) {
                                     </div>
                                     <button
                                         onClick={() => handleAddToCart(product)}
-                                        className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-medium py-2 rounded-lg transition-colors"
+                                        disabled={product.category === 'po' && !poAvailable}
+                                        className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium py-2 rounded-lg transition-colors"
                                     >
                                         + Tambah Keranjang
                                     </button>
@@ -156,11 +182,18 @@ export default function Checkout({ products = [] }) {
                                     placeholder="106.8166"
                                     value={data.lng}
                                     onChange={(e) => setData('lng', e.target.value)}
+                                    onBlur={handleCalculate}
                                     className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     required
                                 />
                                 {errors.lng && <span className="text-xs text-red-500">{errors.lng}</span>}
                             </div>
+
+                            {distance && (
+                                <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-sm">
+                                    Jarak: {distance.distance} km | Ongkir: Rp {distance.shipping_cost.toLocaleString('id-ID')}
+                                </div>
+                            )}
 
                             {errors.error && (
                                 <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">

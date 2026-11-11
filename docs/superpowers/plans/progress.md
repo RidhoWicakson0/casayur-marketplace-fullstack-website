@@ -17,3 +17,5 @@
 - **Audit note**: Checkout controller still uses hardcoded store coordinates and order storage remains placeholder; replace before production.
 
 Task 1: complete (commits ..b3aea07, tests: php artisan test tests/Feature/CheckoutPageTest.php → passed)
+- **2026-11-11**: Implement PO Time-gating and stock reduction logic.
+Task 2: complete (commits ..978eb6c..HEAD, tests: POAvailabilityTest, CheckoutPageTest -> passed)
