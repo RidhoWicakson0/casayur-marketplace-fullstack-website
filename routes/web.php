@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
@@ -14,6 +15,8 @@ Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.s
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('products', ProductController::class);
+    Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::patch('orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
 });
 
 Route::prefix('{current_team}')
