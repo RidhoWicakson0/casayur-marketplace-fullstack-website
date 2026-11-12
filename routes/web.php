@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\CheckoutController;
@@ -8,7 +9,7 @@ use App\Http\Controllers\Teams\TeamInvitationController;
 use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::inertia('/checkout', 'Checkout')->name('checkout');
 Route::post('/checkout/calculate', [CheckoutController::class, 'calculate'])->name('checkout.calculate');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');

@@ -24,9 +24,35 @@ Toko online pribadi (Sayur, Lotek, Gorengan, Sembako). Fitur: Preorder (PO) & Ma
 *   **Audit COD:** Wajib verifikasi WhatsApp/Akun untuk opsi COD guna mencegah pembatalan sepihak.
 
 ## 5. Rencana Pengerjaan (Plan)
-1.  **Setup Environment:** Laravel 12 + Vite + React + Inertia.
-2.  **Database Design:** Migration users, products, orders, order_items, shipping.
-3.  **Core Backend:** Implementasi Haversine (Spatial) untuk jarak & Logic PO (09.00-12.00).
-4.  **Frontend (React):** Layouting & Form Checkout Dinamis.
-5.  **Payment/COD Integration:** Setup Midtrans & Logic verifikasi COD.
-6.  **Admin Panel:** CRUD Product & Dashboard Order.
+1.  **Setup Environment:** Laravel 12 + Vite + React + Inertia (Selesai).
+2.  **Database Design:** Migration users, products, orders, order_items, shipping (Selesai).
+3.  **Core Backend:** Implementasi Haversine (Spatial) untuk jarak & Logic PO (09.00-12.00) (Selesai).
+4.  **Frontend (React) Checkout:** Layouting & Form Checkout Dinamis (Selesai).
+5.  **Admin Panel:** CRUD Product & Dashboard Order (Selesai).
+6.  **Landing Page:** Hero section, Carousel, Katalog, Filter, Informasi Layanan.
+7.  **Checkout & Split Logic:** Implementasi penyimpanan order dan split order PO vs Ready.
+8.  **Payment/COD Integration:** Setup Midtrans & Logic verifikasi COD.
+
+## 6. Status Development (Update Per 11 Nov 2026)
+### Selesai
+- Scaffolding & Setup.
+- Database Schema (users, products, orders, order_items).
+- Backend (Distance check, PO Time-gating, Inventory decrement).
+- Checkout UI (Integration radius calculation, split summary).
+- Admin Product CRUD (Index, Store).
+- Admin Order Dashboard (List, Update status).
+
+### Belum Selesai (Next Steps)
+- Landing Page (Catalog, Banner, Search).
+- Order Storage & Split Logic (Database persistence).
+- Payment/COD Integration (Midtrans & WA Verification).
+- Admin Dashboard UI/UX Refinement.
+
+## 7. Spesifikasi Frontend Landing Page
+*   **Header:** Logo Casayur, Navigasi (Home, Katalog, Status), Login/Register, Keranjang (Badge).
+*   **Hero Section:** Split-screen, Carousel (Promo/Info), CTA "Belanja Sekarang", Indikator PO otomatis (PO Buka/PO Tutup).
+*   **Katalog:** Tab Filter (Ready/PO), Pencarian, Grid card produk, Tombol tambah keranjang, Disable tombol PO di luar jam.
+*   **Info Layanan:** Radius 20km, Jam PO 09.00-12.00, info Pickup/Delivery/COD.
+*   **Footer:** Jam operasional, Kontak WhatsApp verifikasi COD, Sosial media.
+*   **Interaksi:** Floating/Sticky Cart, Loading state, Empty state, Error handling radius (inline).
+

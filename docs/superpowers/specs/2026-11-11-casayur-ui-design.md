@@ -1,37 +1,37 @@
 # Desain UI: Casayur App
 
 ## 1. Konsep Visual (Referensi: Superly Marketplace)
-*   **Filosofi:** "Fresh, Honest, & Accessible". Menghindari kesan "toko kaku".
+*   **Filosofi:** "Fresh, Honest, & Accessible". Desain *clean*, *open*, dengan *whitespace* yang luas untuk kenyamanan visual.
 *   **Palette:**
-    *   *Primary:* Hijau Muda/Segar (Representasi sayur/segar).
-    *   *Accent:* Kuning hangat/Oranye lembut (Representasi semangat/keranjang).
-    *   *Neutral:* Off-white (Background) & Dark Slate (Teks, agar kontras namun nyaman di mata).
-*   **Tipografi:** Sans-serif bulat (Rounded) untuk kesan ramah dan modern.
-*   **Elevasi:** Penggunaan *card* dengan *drop shadow* tipis untuk hierarki produk.
+    *   *Primary:* Hijau Muda/Segar (`#10B981` atau setara).
+    *   *Accent:* Oranye lembut (`#F59E0B`) untuk *urgency* PO.
+    *   *Neutral:* Off-white (`#FDFDFC`) untuk background, Dark Slate (`#1E293B`) untuk teks utama agar keterbacaan tinggi.
+*   **Tipografi:** *Sans-serif* dengan sudut *rounded* (Inter atau Instrument Sans) untuk kesan ramah dan modern.
+*   **Sistem Spasi:** Skala konsisten (4px/8px *spacing rhythm*) untuk menjaga keseragaman layout.
+*   **Elevasi:** *Card* menggunakan *border* halus dan *drop shadow* sangat tipis (*subtle*) untuk kedalaman visual tanpa kesan berat.
 
 ## 2. Komponen Utama
-
 ### A. Hero Section
-*   **Layout:** *Split-screen*. Kiri: Judul & CTA utama ("Belanja Segar Harian"). Kanan: Ilustrasi 2D/3D *high-quality* sayur atau keranjang belanja.
-*   **Info PO:** *Banner* kecil atau *badge* dinamis di bawah hero yang menunjukkan status PO: "PO Buka 09.00 - 12.00" (otomatis berubah warna jika di luar jam).
+*   **Layout:** *Split-screen* responsif. Kiri: Judul & CTA utama. Kanan: Ilustrasi 2D/3D *high-quality*.
+*   **Carousel:** Banner dinamis untuk promo, status PO, dan informasi radius.
+*   **Info PO:** *Badge* status dinamis: "PO Buka 09.00 - 12.00" (hijau) atau "PO Tutup" (abu-abu/merah).
 
-### B. Katalog Produk (Ready vs PO)
-*   **Tampilan:** *Grid card* responsif.
-*   **State Produk:**
-    *   *Ready Stock:* Tombol "Tambah ke Keranjang" standar.
-    *   *PO:* Tombol "Preorder" dengan indikator sisa stok PO.
-*   **Hover Effect:** *Card* sedikit terangkat (*subtle lift*) untuk meningkatkan *interactivity*.
+### B. Katalog Produk & Discovery
+*   **Search & Filter:** *Search bar* menonjol, filter kategori menggunakan *horizontal scrollable pills*.
+*   **Product Card:**
+    *   Visual: Gambar dengan *aspect-ratio* seragam.
+    *   Kategori: *Badge* semi-transparan.
+    *   Interaksi: *Card lift* saat *hover*, tombol *Add to Cart* dengan *loading state*.
+*   **Empty State:** Ilustrasi ramah saat hasil pencarian tidak ditemukan atau keranjang kosong.
 
-### C. Checkout & Cart (Split Logic)
-*   **Cart Drawer/Page:** Otomatis mendeteksi item PO vs Ready. Tampilan keranjang dibagi dua kolom/bagian: "Siap Kirim" dan "Preorder".
-*   **Checkout Form:**
-    *   Input koordinat (integrasi *map* untuk validasi radius 20km).
-    *   *Dynamic Pricing:* Biaya kirim otomatis muncul setelah alamat divalidasi.
-    *   *COD Warning:* *Alert* halus jika memilih COD, mengarahkan verifikasi via WhatsApp.
+### C. Checkout & Cart
+*   **Floating/Sticky Cart:** Ikon keranjang dengan *badge* jumlah yang selalu terlihat atau *drawer* akses cepat.
+*   **Pemisahan:** Otomatis deteksi "Siap Kirim" vs "Preorder" dengan subtotal terpisah.
+*   **Form Dinamis:** Input koordinat dengan validasi *inline* (radius 20km).
+*   **Trust Signals:** *Alert* halus verifikasi WhatsApp untuk COD, bukan *popup* kasar.
 
-### D. Admin Dashboard
-*   **Fokus:** *High-density data*. Tabel pesanan dengan *tag* status (PO/Ready) yang mencolok.
-
-## 3. Komponen UX Khusus
-*   **PO Time-gating:** Jika di luar jam 09.00-12.00, tombol PO di semua *card* berubah menjadi *disabled* dengan *tooltip* "PO tutup".
-*   **Radius Error:** *Feedback* visual saat alamat di luar 20km (tampilan *error* lembut, bukan *blocking popup* kasar).
+### D. Micro-interactions & Accessibility
+*   **Loading:** *Skeleton screen* untuk katalog produk sebelum data dimuat.
+*   **Feedback:** *Toast notification* (bukan *alert* browser) untuk aksi sukses (tambah keranjang, update status).
+*   **State:** Status *disabled* untuk tombol PO di luar jam operasional dengan *tooltip* penjelas.
+*   **Responsiveness:** Mobile-first, *touch-friendly* untuk elemen *click*.
