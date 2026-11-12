@@ -21,6 +21,8 @@ class LandingPageTest extends TestCase
         $response->assertInertia(fn ($page) => $page
             ->component('welcome')
             ->has('products', 2)
+            ->has('poOpen')
+            ->has('serverTime')
         );
     }
 }

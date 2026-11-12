@@ -2,41 +2,64 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
 {
+    public function index(OrderService $orders)
+    {
+        return inertia('Checkout', [
+            'products' => Product::all(),
+            'poOpen' => $orders->isPOAvailable(now()),
+        ]);
+    }
+
     public function calculate(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'lat' => 'required|numeric',
             'lng' => 'required|numeric',
-            'items' => 'required|array',
+            'method' => 'required|in:pickup,delivery',
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required|integer|exists:products,id',
+            'items.*.qty' => 'required|integer|min:1',
         ]);
 
-        // PO Time-gating validation
-        $hasPO = collect($request->items)->contains(fn($i) => \App\Models\Product::find($i['product_id'])->category === 'po');
-        if ($hasPO && !(new OrderService())->isPOAvailable(\Carbon\Carbon::now())) {
+        $service = new OrderService();
+        $products = Product::whereIn('id', collect($data['items'])->pluck('product_id'))
+            ->get()
+            ->keyBy('id');
+
+        $hasPO = $products->contains(fn ($product) => $product->category === 'po');
+
+        if ($hasPO && ! $service->isPOAvailable(now())) {
             return response()->json(['error' => 'Preorder hanya tersedia jam 09.00-12.00'], 422);
         }
 
-        $storeLat = -6.2000;
-        $storeLng = 106.8166;
-
-        $distance = DB::selectOne(
-            "SELECT ST_Distance_Sphere(POINT(?, ?), POINT(?, ?)) / 1000 as distance_km",
-            [$request->lng, $request->lat, $storeLng, $storeLat]
-        )->distance_km;
+        $distance = $this->distanceFromStore($data['lat'], $data['lng']);
 
         if ($distance > 20) {
             return response()->json(['error' => 'Alamat di luar radius 20km'], 422);
         }
 
+        $shipping = [
+            'ready' => $products->contains(fn ($product) => $product->category === 'ready')
+                ? $service->shippingCost('ready', $distance, $data['method'])
+                : 0,
+            'po' => $hasPO
+                ? $service->shippingCost('po', $distance, $data['method'])
+                : 0,
+        ];
+
         return response()->json([
             'distance' => round($distance, 2),
-            'shipping_cost' => $distance > 3 ? round(($distance - 3) * 2000) : 0
+            'shipping' => $shipping,
+            'total_shipping' => array_sum($shipping),
+            'cod_available' => $service->codAvailable($distance),
+            'po_available' => $service->isPOAvailable(now()),
         ]);
     }
 
@@ -46,23 +69,60 @@ class CheckoutController extends Controller
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|integer|exists:products,id',
             'items.*.qty' => 'required|integer|min:1',
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
+            'method' => 'required|in:pickup,delivery',
+            'payment_method' => 'required|in:cod,manual',
         ]);
 
         return DB::transaction(function () use ($validated) {
-            $products = \App\Models\Product::whereIn(
+            $service = new OrderService();
+            $products = Product::whereIn(
                 'id',
                 collect($validated['items'])->pluck('product_id')
             )->lockForUpdate()->get()->keyBy('id');
 
-            foreach ($validated['items'] as $item) {
-                $product = $products[$item['product_id']];
-                if ($product->stock < $item['qty']) {
+            $hasPO = $products->contains(fn ($product) => $product->category === 'po');
+
+            if ($hasPO && ! $service->isPOAvailable(now())) {
+                return back()->withErrors(['error' => 'Preorder hanya tersedia jam 09.00-12.00']);
+            }
+
+            $distance = $this->distanceFromStore($validated['lat'], $validated['lng']);
+
+            if ($distance > 20) {
+                return back()->withErrors(['error' => 'Alamat di luar radius 20km']);
+            }
+
+            if ($validated['payment_method'] === 'cod' && ! $service->codAvailable($distance)) {
+                return back()->withErrors(['error' => 'COD hanya tersedia sampai 5 km']);
+            }
+
+            $quantities = collect($validated['items'])
+                ->groupBy('product_id')
+                ->map(fn ($items) => $items->sum('qty'));
+
+            foreach ($quantities as $productId => $qty) {
+                $product = $products[$productId];
+
+                if ($product->stock < $qty) {
                     return back()->withErrors(['error' => "Stok {$product->name} tidak cukup."]);
                 }
-                $product->decrement('stock', $item['qty']);
+            }
+
+            foreach ($quantities as $productId => $qty) {
+                $products[$productId]->decrement('stock', $qty);
             }
 
             return back()->with('success', 'Order created');
         });
+    }
+
+    private function distanceFromStore(float $lat, float $lng): float
+    {
+        return DB::selectOne(
+            'SELECT ST_Distance_Sphere(POINT(?, ?), POINT(?, ?)) / 1000 as distance_km',
+            [$lng, $lat, 106.8166, -6.2000]
+        )->distance_km;
     }
 }

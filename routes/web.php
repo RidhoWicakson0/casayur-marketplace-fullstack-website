@@ -10,7 +10,7 @@ use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
-Route::inertia('/checkout', 'Checkout')->name('checkout');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 Route::post('/checkout/calculate', [CheckoutController::class, 'calculate'])->name('checkout.calculate');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
