@@ -954,6 +954,7 @@ Structure:
   - Success message `Pesanan diterima.` with `role="status"`.
 
 Behavior:
+- Map cart items to the backend contract before every request: `items.map(({ productId, qty }) => ({ product_id: productId, qty }))`.
 - Fetch `/checkout/calculate` with `items`, `lat`, `lng`, `method`, and `X-CSRF-TOKEN` from the meta tag. No `alert()`.
 - On error, set an inline message.
 - Use `useForm` for submit with `{ items, lat, lng, method, payment_method }`.
