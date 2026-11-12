@@ -915,7 +915,7 @@ git commit -m "feat: rebuild landing page with casayur identity"
 
 **Files:**
 - Modify: `resources/views/app.blade.php`
-- Modify: `resources/js/pages/Checkout.jsx`
+- Modify: `resources/js/pages/Checkout.tsx`
 - Test: `tests/Feature/CheckoutPageTest.php`
 
 **Interfaces:**
@@ -932,7 +932,9 @@ In `resources/views/app.blade.php`, inside `<head>`, add:
 <meta name="csrf-token" content="{{ csrf_token() }}">
 ```
 
-- [ ] **Step 2: Rewrite `Checkout.jsx`**
+- [ ] **Step 2: Rewrite `Checkout.tsx`**
+
+Rename the old `Checkout.jsx` to `Checkout.tsx` and rebuild it there. The Blade template preloads `resources/js/pages/{component}.tsx`, so a `.jsx` page cannot render in a production build.
 
 Structure:
 
@@ -977,7 +979,7 @@ Expected: both PASS.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add resources/views/app.blade.php resources/js/pages/Checkout.jsx tests/Feature/CheckoutPageTest.php app/Http/Controllers/CheckoutController.php
+git add resources/views/app.blade.php resources/js/pages/Checkout.tsx tests/Feature/CheckoutPageTest.php app/Http/Controllers/CheckoutController.php
 git commit -m "feat: rebuild checkout with shared cart and inline shipping"
 ```
 
