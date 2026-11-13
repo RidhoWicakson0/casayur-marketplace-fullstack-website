@@ -8,47 +8,69 @@ import {
     ShoppingBasket,
     Sun,
     X,
+    User,
+    LogOut,
+    History,
+    Settings,
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useCart } from '@/contexts/cart-context';
 import { useAppearance } from '@/hooks/use-appearance';
 import { cn } from '@/lib/utils';
 import { login, register } from '@/routes';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 function ThemeControl() {
     const { appearance, updateAppearance } = useAppearance();
-    const options = [
-        { mode: 'system' as const, label: 'Sistem', icon: Monitor },
-        { mode: 'light' as const, label: 'Terang', icon: Sun },
-        { mode: 'dark' as const, label: 'Gelap', icon: Moon },
-    ];
+    
+    // Hitung secara langsung apakah root document saat ini sedang dark
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        const checkDark = () => {
+            if (typeof document !== 'undefined') {
+                setIsDark(document.documentElement.classList.contains('dark'));
+            }
+        };
+
+        checkDark();
+
+        const observer = new MutationObserver(checkDark);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class'],
+        });
+
+        return () => observer.disconnect();
+    }, [appearance]);
+
+    const toggleTheme = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const nextMode = isDark ? 'light' : 'dark';
+        updateAppearance(nextMode);
+    };
 
     return (
-        <div
-            className="flex items-center rounded-lg border border-line bg-surface p-0.5"
-            role="group"
-            aria-label="Tema tampilan"
+        <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={isDark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap'}
+            title={isDark ? 'Tema terang' : 'Tema gelap'}
+            className="inline-flex min-h-10 min-w-10 cursor-pointer items-center justify-center rounded-md border border-[--line] bg-[--surface] text-[--ink] transition-colors hover:border-[--leaf] focus:outline-none"
         >
-            {options.map(({ mode, label, icon: Icon }) => (
-                <button
-                    key={mode}
-                    type="button"
-                    onClick={() => updateAppearance(mode)}
-                    aria-pressed={appearance === mode}
-                    aria-label={label}
-                    title={label}
-                    className={cn(
-                        'inline-flex min-h-11 items-center gap-1.5 rounded-md px-2 text-xs font-medium transition-colors',
-                        appearance === mode
-                            ? 'bg-leaf text-white'
-                            : 'text-muted-ink hover:text-ink',
-                    )}
-                >
-                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
-                    <span className="hidden lg:inline">{label}</span>
-                </button>
-            ))}
-        </div>
+            {isDark ? (
+                <Sun className="h-5 w-5 text-[--turmeric]" aria-hidden="true" />
+            ) : (
+                <Moon className="h-5 w-5 text-[--ink]" aria-hidden="true" />
+            )}
+        </button>
     );
 }
 
@@ -65,7 +87,7 @@ function NavLink({
         <a
             href={href}
             onClick={onClick}
-            className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium text-muted-ink transition-colors hover:text-ink"
+            className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium text-[--muted-ink] transition-colors hover:text-[--ink]"
         >
             {children}
         </a>
@@ -76,6 +98,9 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
     const reduceMotion = useReducedMotion();
     const [open, setOpen] = useState(false);
     const { count } = useCart();
+    
+    // Dummy state for auth
+    const [isLoggedIn] = useState(false); 
 
     useEffect(() => {
         if (!open) {
@@ -96,83 +121,87 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
     const closeMenu = () => setOpen(false);
 
     return (
-        <motion.header
-            initial={reduceMotion ? false : { opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="sticky top-0 z-40 border-b border-line bg-paper"
+        <header
+            className="sticky top-0 z-50 w-full border-b border-[#d6e0d2] bg-[#f3f7f1] text-[--ink] shadow-sm transition-colors duration-200 dark:border-[#26342a] dark:bg-[#0e1511]"
         >
             <div className="mx-auto flex min-h-16 w-full max-w-[1200px] items-center justify-between gap-3 px-[clamp(20px,5vw,48px)]">
                 <div className="flex items-center gap-4">
                     <Link
                         href="/"
                         aria-label="Casayur, kembali ke beranda"
-                        className="inline-flex min-h-11 items-center gap-1.5 font-display text-2xl font-bold tracking-tight text-ink"
+                        className="inline-flex min-h-11 items-center gap-1.5 font-display text-2xl font-bold tracking-tight text-[--ink]"
                     >
-                        <Leaf className="h-5 w-5 text-leaf" aria-hidden="true" />
-                        casayur<span className="text-leaf">.</span>
+                        <Leaf className="h-5 w-5 text-[--leaf]" aria-hidden="true" />
+                        casayur<span className="text-[--leaf]">.</span>
                     </Link>
-
-                    <div
-                        className="hidden items-center gap-2 text-xs font-medium sm:flex"
-                        aria-live="polite"
-                    >
-                        <span
-                            className={cn(
-                                'h-2 w-2 rounded-full',
-                                poOpen ? 'bg-leaf' : 'bg-turmeric',
-                            )}
-                            aria-hidden="true"
-                        />
-                        <span className={poOpen ? 'text-leaf' : 'text-turmeric'}>
-                            {poOpen ? 'PO buka' : 'PO tutup'}
-                        </span>
-                    </div>
                 </div>
 
                 <nav className="hidden items-center gap-1 lg:flex" aria-label="Navigasi utama">
-                    <NavLink href="#katalog">Katalog</NavLink>
-                    <NavLink href="#layanan">Layanan</NavLink>
-                    <NavLink href="#cara-pesan">Cara pesan</NavLink>
+                    <NavLink href="/products">Produk</NavLink>
+                    <NavLink href="/pesanin">Pesanin</NavLink>
+                    <NavLink href="/layanan">Layanan</NavLink>
+                    <NavLink href="/tentang">Tentang</NavLink>
                 </nav>
 
-                <div className="flex items-center gap-1.5">
-                    <div className="hidden items-center gap-1.5 lg:flex">
-                        <ThemeControl />
-                    </div>
-
-                    <Link
-                        href={login()}
-                        className="hidden min-h-11 items-center rounded-md px-3 text-sm font-medium text-muted-ink transition-colors hover:text-ink lg:inline-flex"
-                    >
-                        Masuk
-                    </Link>
-                    <Link
-                        href={register()}
-                        className="hidden min-h-11 items-center rounded-md bg-leaf px-4 text-sm font-semibold text-white transition-colors hover:bg-leaf-deep lg:inline-flex"
-                    >
-                        Daftar
-                    </Link>
+                <div className="flex items-center gap-2">
+                    <ThemeControl />
 
                     <Link
                         href="/checkout"
                         aria-label={`Keranjang, ${count} item`}
-                        className="inline-flex min-h-11 items-center gap-2 rounded-md border border-line bg-surface px-3 text-sm font-medium text-ink transition-colors hover:border-leaf"
+                        className="relative inline-flex min-h-10 min-w-10 items-center justify-center rounded-md border border-[--line] bg-[--surface] text-[--ink] transition-colors hover:border-[--leaf]"
                     >
-                        <ShoppingBasket className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden sm:inline">Keranjang</span>
+                        <ShoppingBasket className="h-5 w-5" aria-hidden="true" />
                         {count > 0 && (
-                            <motion.span
-                                key={count}
-                                initial={{ scale: 0.9 }}
-                                animate={{ scale: 1 }}
-                                transition={{ duration: 0.2 }}
-                                className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-leaf px-1 text-[11px] font-semibold text-white tabular-nums"
-                            >
+                            <span className="absolute -top-1 -right-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[--leaf] px-1 text-[10px] font-semibold text-white tabular-nums">
                                 {count}
-                            </motion.span>
+                            </span>
                         )}
                     </Link>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button
+                                type="button"
+                                aria-label="Menu akun pengguna"
+                                className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[--line] bg-[--surface] text-[--ink] transition-colors hover:border-[--leaf] focus:outline-none focus:ring-2 focus:ring-[--leaf]"
+                            >
+                                <Avatar className="pointer-events-none h-8 w-8">
+                                    <AvatarImage src="" alt="Avatar Profil" />
+                                    <AvatarFallback className="bg-[--surface] text-[--ink] font-medium">
+                                        <User className="h-4 w-4" />
+                                    </AvatarFallback>
+                                </Avatar>
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="z-50 w-48 border border-[--line] bg-[--surface] text-[--ink] shadow-lg">
+                            {isLoggedIn ? (
+                                <>
+                                    <DropdownMenuItem className="cursor-pointer hover:bg-[--paper]">
+                                        <Settings className="mr-2 h-4 w-4" />
+                                        <span>Edit Profil</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="cursor-pointer hover:bg-[--paper]">
+                                        <History className="mr-2 h-4 w-4" />
+                                        <span>History Belanja</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="cursor-pointer text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30">
+                                        <LogOut className="mr-2 h-4 w-4" />
+                                        <span>Logout</span>
+                                    </DropdownMenuItem>
+                                </>
+                            ) : (
+                                <>
+                                    <DropdownMenuItem asChild className="cursor-pointer hover:bg-[--paper]">
+                                        <Link href={register()} className="w-full">Sign Up</Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild className="cursor-pointer hover:bg-[--paper]">
+                                        <Link href={login()} className="w-full">Sign In</Link>
+                                    </DropdownMenuItem>
+                                </>
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
 
                     <button
                         type="button"
@@ -180,7 +209,7 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                         aria-expanded={open}
                         aria-controls="mobile-menu"
                         aria-label={open ? 'Tutup menu' : 'Buka menu'}
-                        className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-line bg-surface text-ink lg:hidden"
+                        className="inline-flex min-h-10 min-w-10 items-center justify-center rounded-md border border-[--line] bg-[--surface] text-[--ink] transition-colors hover:border-[--leaf] lg:hidden"
                     >
                         {open ? (
                             <X className="h-5 w-5" aria-hidden="true" />
@@ -192,56 +221,35 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
             </div>
 
             {open && (
-                <div id="mobile-menu" className="border-t border-line bg-paper lg:hidden">
+                <div id="mobile-menu" className="border-t border-[--line] bg-[#f3f7f1] text-[--ink] dark:bg-[#0e1511] lg:hidden">
                     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-1 px-[clamp(20px,5vw,48px)] py-4">
-                        <div className="flex items-center gap-2 pb-2 text-xs font-medium">
-                            <span
-                                className={cn(
-                                    'h-2 w-2 rounded-full',
-                                    poOpen ? 'bg-leaf' : 'bg-turmeric',
-                                )}
-                                aria-hidden="true"
-                            />
-                            <span className={poOpen ? 'text-leaf' : 'text-turmeric'}>
-                                {poOpen ? 'PO buka' : 'PO tutup'}
-                            </span>
-                            <span className="text-muted-ink">09.00 - 12.00 WIB</span>
-                        </div>
+                        <NavLink href="/products" onClick={closeMenu}>Produk</NavLink>
+                        <NavLink href="/pesanin" onClick={closeMenu}>Pesanin</NavLink>
+                        <NavLink href="/layanan" onClick={closeMenu}>Layanan</NavLink>
+                        <NavLink href="/tentang" onClick={closeMenu}>Tentang</NavLink>
 
-                        <NavLink href="#katalog" onClick={closeMenu}>
-                            Katalog
-                        </NavLink>
-                        <NavLink href="#layanan" onClick={closeMenu}>
-                            Layanan
-                        </NavLink>
-                        <NavLink href="#cara-pesan" onClick={closeMenu}>
-                            Cara pesan
-                        </NavLink>
-
-                        <div className="mt-2 flex flex-col gap-1 border-t border-line pt-3">
-                            <Link
-                                href={login()}
-                                onClick={closeMenu}
-                                className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium text-muted-ink hover:text-ink"
-                            >
-                                Masuk
-                            </Link>
-                            <Link
-                                href={register()}
-                                onClick={closeMenu}
-                                className="inline-flex min-h-11 items-center rounded-md bg-leaf px-3 text-sm font-semibold text-white hover:bg-leaf-deep"
-                            >
-                                Daftar
-                            </Link>
-                        </div>
-
-                        <div className="mt-2 flex items-center justify-between border-t border-line pt-3">
-                            <span className="text-sm text-muted-ink">Tema</span>
+                        <div className="mt-2 border-t border-[--line] pt-3 flex items-center justify-between">
+                            <span className="text-sm font-medium text-[--muted-ink]">Tema Tampilan</span>
                             <ThemeControl />
+                        </div>
+
+                        <div className="mt-2 border-t border-[--line] pt-3 flex flex-col gap-2">
+                             {isLoggedIn ? (
+                                <>
+                                    <NavLink href="/profile" onClick={closeMenu}>Edit Profil</NavLink>
+                                    <NavLink href="/history" onClick={closeMenu}>History Belanja</NavLink>
+                                    <button className="text-left px-3 text-sm font-medium text-red-600">Logout</button>
+                                </>
+                            ) : (
+                                <>
+                                    <NavLink href={register()} onClick={closeMenu}>Sign Up</NavLink>
+                                    <NavLink href={login()} onClick={closeMenu}>Sign In</NavLink>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
             )}
-        </motion.header>
+        </header>
     );
 }
