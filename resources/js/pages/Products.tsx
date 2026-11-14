@@ -52,10 +52,10 @@ export default function Products({ products = [], poOpen = false }: { products?:
                     </div>
 
                     <div className="mt-12 flex flex-col gap-4 border-y border-line py-5 lg:flex-row lg:items-center lg:justify-between">
-                        <label className="relative block lg:w-80">
-                            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-ink" aria-hidden="true" />
+                        <label className="flex h-11 items-center gap-3 rounded-lg border border-line bg-surface px-3 transition-colors focus-within:border-leaf focus-within:ring-2 focus-within:ring-leaf/20 lg:w-80">
+                            <Search className="h-4 w-4 shrink-0 text-muted-ink" aria-hidden="true" />
                             <span className="sr-only">Cari produk</span>
-                            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cari produk" className="h-11 w-full rounded-lg border border-line bg-surface pl-10 pr-3 text-sm text-ink outline-none transition-colors placeholder:text-muted-ink focus:border-leaf focus:ring-2 focus:ring-leaf/20" />
+                            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cari produk" className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-muted-ink" />
                         </label>
                         <div className="flex flex-wrap items-center gap-2">
                             {(['all', 'ready', 'po'] as Filter[]).map((value) => (
