@@ -10,7 +10,7 @@ use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
-Route::get('/products', [LandingController::class, 'index'])->name('products.index');
+Route::get('/products', [LandingController::class, 'products'])->name('products.index');
 Route::get('/pesanin', function () {
     return inertia('Pesanin');
 });

@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { ArrowUpRight, Leaf } from 'lucide-react';
+import { ArrowUpRight, Instagram, Leaf, MessageCircle } from 'lucide-react';
 import { login, register } from '@/routes';
 
 const anchorClass = 'text-sm text-muted-ink transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leaf';
@@ -42,12 +42,27 @@ export function SiteFooter() {
                     </div>
 
                     <div>
-                        <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-ink">Kontak</h2>
-                        <ul className="mt-4 space-y-3 text-sm text-muted-ink">
-                            <li>PO 09.00 - 12.00 WIB</li>
-                            <li>Gratis ongkir hingga 5 KM</li>
-                            <li>WhatsApp +62 812-3456-7890</li>
-                        </ul>
+                        <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-ink">Ikuti Kami</h2>
+                        <div className="mt-4 flex items-center gap-3">
+                            <a
+                                href="https://instagram.com/casayur"
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label="Instagram Casayur"
+                                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line text-muted-ink transition-colors hover:border-leaf hover:text-leaf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leaf"
+                            >
+                                <Instagram className="h-5 w-5" aria-hidden="true" />
+                            </a>
+                            <a
+                                href="https://wa.me/6281234567890"
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label="WhatsApp Casayur"
+                                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line text-muted-ink transition-colors hover:border-leaf hover:text-leaf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leaf"
+                            >
+                                <MessageCircle className="h-5 w-5" aria-hidden="true" />
+                            </a>
+                        </div>
                     </div>
                 </div>
 

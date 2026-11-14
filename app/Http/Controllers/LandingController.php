@@ -7,12 +7,22 @@ use App\Services\OrderService;
 
 class LandingController extends Controller
 {
-    public function index(OrderService $orders)
+    private function catalogProps(OrderService $orders): array
     {
-        return inertia('welcome', [
+        return [
             'products' => Product::all(),
             'poOpen' => $orders->isPOAvailable(now()),
             'serverTime' => now()->toIso8601String(),
-        ]);
+        ];
+    }
+
+    public function index(OrderService $orders)
+    {
+        return inertia('welcome', $this->catalogProps($orders));
+    }
+
+    public function products(OrderService $orders)
+    {
+        return inertia('Products', $this->catalogProps($orders));
     }
 }

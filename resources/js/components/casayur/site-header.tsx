@@ -122,7 +122,7 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
 
     return (
         <header
-            className="sticky top-0 z-50 w-full border-b border-[#d6e0d2] bg-[#f3f7f1] text-[--ink] shadow-sm transition-colors duration-200 dark:border-[#26342a] dark:bg-[#0e1511]"
+            className="sticky top-0 z-50 w-full border-b border-line bg-surface text-ink shadow-sm transition-colors duration-200"
         >
             <div className="mx-auto flex min-h-16 w-full max-w-[1200px] items-center justify-between gap-3 px-[clamp(20px,5vw,48px)]">
                 <div className="flex items-center gap-4">
@@ -221,7 +221,7 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
             </div>
 
             {open && (
-                <div id="mobile-menu" className="border-t border-[--line] bg-[#f3f7f1] text-[--ink] dark:bg-[#0e1511] lg:hidden">
+                <div id="mobile-menu" className="border-t border-line bg-surface text-ink lg:hidden">
                     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-1 px-[clamp(20px,5vw,48px)] py-4">
                         <NavLink href="/products" onClick={closeMenu}>Produk</NavLink>
                         <NavLink href="/pesanin" onClick={closeMenu}>Pesanin</NavLink>
