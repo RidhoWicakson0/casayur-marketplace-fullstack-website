@@ -140,8 +140,8 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                 <nav className="hidden items-center gap-1 lg:flex" aria-label="Navigasi utama">
                     <NavLink href="/products">Produk</NavLink>
                     <NavLink href="/pesanin">Pesanin</NavLink>
-                    <NavLink href="/layanan">Layanan</NavLink>
-                    <NavLink href="/tentang">Tentang</NavLink>
+                    <NavLink href="/#layanan">Layanan</NavLink>
+                    <NavLink href="/#tentang">Tentang</NavLink>
                 </nav>
 
                 <div className="flex items-center gap-2">
@@ -231,8 +231,8 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-1 px-[clamp(20px,5vw,48px)] py-4">
                         <NavLink href="/products" onClick={closeMenu}>Produk</NavLink>
                         <NavLink href="/pesanin" onClick={closeMenu}>Pesanin</NavLink>
-                        <NavLink href="/layanan" onClick={closeMenu}>Layanan</NavLink>
-                        <NavLink href="/tentang" onClick={closeMenu}>Tentang</NavLink>
+                        <NavLink href="/#layanan" onClick={closeMenu}>Layanan</NavLink>
+                        <NavLink href="/#tentang" onClick={closeMenu}>Tentang</NavLink>
 
                         <div className="mt-2 border-t border-[--line] pt-3 flex items-center justify-between">
                             <span className="text-sm font-medium text-[--muted-ink]">Tema Tampilan</span>

@@ -26,8 +26,8 @@ export function SiteFooter() {
                         <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-ink">Jelajahi</h2>
                         <ul className="mt-4 space-y-3">
                             <li><a href="#katalog" className={anchorClass}>Katalog</a></li>
-                            <li><a href="#layanan" className={anchorClass}>Layanan</a></li>
-                            <li><a href="#tentang" className={anchorClass}>Tentang</a></li>
+                            <li><Link href="/#layanan" className={anchorClass}>Layanan</Link></li>
+                            <li><Link href="/#tentang" className={anchorClass}>Tentang</Link></li>
                             <li><Link href="/pesanin" className={anchorClass}>Pesanin</Link></li>
                         </ul>
                     </div>
