@@ -18,6 +18,7 @@ import { useCart } from '@/contexts/cart-context';
 import { useAppearance } from '@/hooks/use-appearance';
 import { cn } from '@/lib/utils';
 import { login, register } from '@/routes';
+import { CartPreview } from './cart-preview';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     DropdownMenu,
@@ -97,7 +98,7 @@ function NavLink({
 export function SiteHeader({ poOpen }: { poOpen: boolean }) {
     const reduceMotion = useReducedMotion();
     const [open, setOpen] = useState(false);
-    const { count } = useCart();
+    const { items, count } = useCart();
     
     // Dummy state for auth
     const [isLoggedIn] = useState(false); 
@@ -146,18 +147,23 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                 <div className="flex items-center gap-2">
                     <ThemeControl />
 
-                    <Link
-                        href="/checkout"
-                        aria-label={`Keranjang, ${count} item`}
-                        className="relative inline-flex min-h-10 min-w-10 items-center justify-center rounded-md border border-[--line] bg-[--surface] text-[--ink] transition-colors hover:border-[--leaf]"
-                    >
-                        <ShoppingBasket className="h-5 w-5" aria-hidden="true" />
-                        {count > 0 && (
-                            <span className="absolute -top-1 -right-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[--leaf] px-1 text-[10px] font-semibold text-white tabular-nums">
-                                {count}
-                            </span>
-                        )}
-                    </Link>
+                    <div className="group relative">
+                        <Link
+                            href="/checkout"
+                            aria-label={`Keranjang, ${count} item`}
+                            className="relative inline-flex min-h-10 min-w-10 items-center justify-center rounded-md border border-[--line] bg-[--surface] text-[--ink] transition-colors hover:border-[--leaf] focus:outline-none focus:ring-2 focus:ring-[--leaf]"
+                        >
+                            <ShoppingBasket className="h-5 w-5" aria-hidden="true" />
+                            {count > 0 && (
+                                <span className="absolute -top-1 -right-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[--leaf] px-1 text-[10px] font-semibold text-white tabular-nums">
+                                    {count}
+                                </span>
+                            )}
+                        </Link>
+                        <div className="invisible opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                            <CartPreview items={items} count={count} />
+                        </div>
+                    </div>
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
