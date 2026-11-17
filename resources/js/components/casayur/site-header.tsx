@@ -123,7 +123,7 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
 
     return (
         <header
-            className="sticky top-0 z-50 w-full border-b border-line bg-surface text-ink shadow-sm transition-colors duration-200"
+            className="sticky top-0 z-50 w-full border-b border-line bg-surface text-ink transition-colors duration-200"
         >
             <div className="mx-auto flex min-h-16 w-full max-w-[1200px] items-center justify-between gap-3 px-[clamp(20px,5vw,48px)]">
                 <div className="flex items-center gap-4">
