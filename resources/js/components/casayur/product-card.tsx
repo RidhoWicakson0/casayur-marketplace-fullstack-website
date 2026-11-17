@@ -61,16 +61,25 @@ export function ProductCard({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.4, delay: Math.min(index, 5) * 0.04 }}
-            className="flex h-full flex-col rounded-[18px] border border-line bg-surface p-4 transition-colors hover:border-leaf/40"
+            className="group flex h-full flex-col rounded-[18px] border border-line bg-surface p-4 transition-colors hover:border-leaf/40"
         >
-            <div
-                className={cn(
-                    'flex aspect-[4/3] items-center justify-center rounded-xl bg-paper',
-                    product.category === 'po' ? 'text-turmeric' : 'text-leaf',
-                )}
+            <Link
+                href={`/products/${product.id}`}
+                aria-label={`Lihat detail ${product.name}`}
+                className="group/detail relative block overflow-hidden rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leaf focus-visible:ring-offset-2"
             >
-                <ProduceMark kind={kind} className="h-20 w-20" />
-            </div>
+                <div
+                    className={cn(
+                        'flex aspect-[4/3] items-center justify-center rounded-xl bg-paper transition-transform duration-300 group-hover/detail:scale-[1.02]',
+                        product.category === 'po' ? 'text-turmeric' : 'text-leaf',
+                    )}
+                >
+                    <ProduceMark kind={kind} className="h-20 w-20" />
+                    <span className="absolute inset-x-3 bottom-3 rounded-lg bg-ink/90 px-3 py-2 text-center text-xs font-semibold text-paper opacity-0 transition-opacity duration-200 group-hover/detail:opacity-100 group-focus-within:opacity-100">
+                        Lihat detail
+                    </span>
+                </div>
+            </Link>
 
             <div className="mt-4 flex flex-1 flex-col">
                 <div className="flex items-center justify-between gap-2">
