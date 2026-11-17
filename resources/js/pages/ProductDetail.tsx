@@ -55,12 +55,8 @@ export default function ProductDetail({ product, poOpen = false }: { product: Pr
                                 <span className={product.stock === 0 ? 'text-danger' : 'text-muted-ink'}>
                                     {product.stock === 0 ? 'Stok habis' : `${product.stock} tersedia`}
                                 </span>
-                                {product.category === 'po' && !poOpen && product.stock > 0 && <span className="text-turmeric">PO buka 09.00</span>}
+                                {product.category === 'po' && !poOpen && product.stock > 0 && <span className="text-turmeric">PO sedang tutup</span>}
                             </div>
-
-                            <p className="mt-8 max-w-xl text-base leading-relaxed text-muted-ink">
-                                Produk segar Casayur untuk kebutuhan dapur harian. Pilih jumlah yang dibutuhkan, lalu lanjutkan ke keranjang untuk checkout.
-                            </p>
 
                             <button
                                 type="button"
