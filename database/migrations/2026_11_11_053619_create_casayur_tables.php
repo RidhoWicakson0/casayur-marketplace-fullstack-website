@@ -31,7 +31,7 @@ return new class extends Migration
         // Orders
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->enum('type', ['ready', 'po']);
             $table->string('status');
             $table->decimal('shipping_cost', 10, 2);

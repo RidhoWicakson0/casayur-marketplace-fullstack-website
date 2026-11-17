@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Product;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
@@ -75,7 +76,7 @@ class CheckoutController extends Controller
             'payment_method' => 'required|in:cod,manual',
         ]);
 
-        return DB::transaction(function () use ($validated) {
+        return DB::transaction(function () use ($validated, $request) {
             $service = new OrderService();
             $products = Product::whereIn(
                 'id',
@@ -107,6 +108,27 @@ class CheckoutController extends Controller
 
                 if ($product->stock < $qty) {
                     return back()->withErrors(['error' => "Stok {$product->name} tidak cukup."]);
+                }
+            }
+
+            $shippingCost = 0;
+            foreach ($products->pluck('category')->unique() as $type) {
+                $group = $quantities->filter(fn ($qty, $productId) => $products[$productId]->category === $type);
+
+                
+                $order = Order::create([
+                    'user_id' => $request->user()?->id,
+                    'type' => $type,
+                    'status' => 'pending',
+                    'shipping_cost' => $shippingCost,
+                ]);
+
+                foreach ($group as $productId => $qty) {
+                    $order->items()->create([
+                        'product_id' => $productId,
+                        'quantity' => $qty,
+                        'price' => $products[$productId]->price,
+                    ]);
                 }
             }
 

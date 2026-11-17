@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Order;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -43,6 +44,23 @@ class CheckoutStoreTest extends TestCase
 
         $response->assertSessionHasErrors('error');
         self::assertSame(5, $ready->fresh()->stock);
+    }
+
+    public function test_store_persists_order_and_items_using_database_price(): void
+    {
+        $ready = Product::create(['name' => 'Bayam', 'category' => 'ready', 'price' => 10000, 'stock' => 5]);
+
+        $response = $this->post(route('checkout.store'), [
+            'lat' => -6.2100,
+            'lng' => 106.8166,
+            'method' => 'delivery',
+            'payment_method' => 'manual',
+            'items' => [['product_id' => $ready->id, 'qty' => 2, 'price' => 1]],
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('orders', ['type' => 'ready', 'status' => 'pending']);
+        $this->assertDatabaseHas('order_items', ['product_id' => $ready->id, 'quantity' => 2, 'price' => 10000]);
     }
 
     public function test_store_decrements_stock_on_success(): void
