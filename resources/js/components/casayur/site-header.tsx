@@ -191,7 +191,7 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                                         <History className="mr-2 h-4 w-4" />
                                         <span>History Belanja</span>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="cursor-pointer text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30">
+                                    <DropdownMenuItem className="cursor-pointer text-danger hover:bg-[--paper]">
                                         <LogOut className="mr-2 h-4 w-4" />
                                         <span>Logout</span>
                                     </DropdownMenuItem>
@@ -244,7 +244,7 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                                 <>
                                     <NavLink href="/profile" onClick={closeMenu}>Edit Profil</NavLink>
                                     <NavLink href="/history" onClick={closeMenu}>History Belanja</NavLink>
-                                    <button className="text-left px-3 text-sm font-medium text-red-600">Logout</button>
+                                    <button className="text-left px-3 text-sm font-medium text-danger">Logout</button>
                                 </>
                             ) : (
                                 <>
