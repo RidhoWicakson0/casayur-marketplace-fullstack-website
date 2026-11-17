@@ -6,7 +6,7 @@ const anchorClass = 'text-sm text-muted-ink transition-colors hover:text-ink foc
 
 export function SiteFooter() {
     return (
-        <footer className="border-t border-line bg-surface text-ink">
+        <footer className="border-t border-line bg-background text-ink">
             <div className="mx-auto w-full max-w-[1200px] px-[clamp(20px,5vw,48px)] py-14 sm:py-20">
                 <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
                     <div>

@@ -64,7 +64,7 @@ function ThemeControl() {
             onClick={toggleTheme}
             aria-label={isDark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap'}
             title={isDark ? 'Tema terang' : 'Tema gelap'}
-            className="inline-flex min-h-10 min-w-10 cursor-pointer items-center justify-center rounded-md border border-[--line] bg-[--surface] text-[--ink] transition-colors hover:border-[--leaf] focus:outline-none"
+            className="inline-flex min-h-10 min-w-10 cursor-pointer items-center justify-center rounded-md border border-[--line] bg-background text-[--ink] transition-colors hover:border-[--leaf] focus:outline-none"
         >
             {isDark ? (
                 <Sun className="h-5 w-5 text-[--turmeric]" aria-hidden="true" />
@@ -123,7 +123,7 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
 
     return (
         <header
-            className="sticky top-0 z-50 w-full border-b border-line bg-surface text-ink transition-colors duration-200"
+            className="sticky top-0 z-50 w-full border-b border-line bg-background text-ink transition-colors duration-200"
         >
             <div className="mx-auto flex min-h-16 w-full max-w-[1200px] items-center justify-between gap-3 px-[clamp(20px,5vw,48px)]">
                 <div className="flex items-center gap-4">
@@ -151,7 +151,7 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                         <Link
                             href="/checkout"
                             aria-label={`Keranjang, ${count} item`}
-                            className="relative inline-flex min-h-10 min-w-10 items-center justify-center rounded-md border border-[--line] bg-[--surface] text-[--ink] transition-colors hover:border-[--leaf] focus:outline-none focus:ring-2 focus:ring-[--leaf]"
+                            className="relative inline-flex min-h-10 min-w-10 items-center justify-center rounded-md border border-[--line] bg-background text-[--ink] transition-colors hover:border-[--leaf] focus:outline-none focus:ring-2 focus:ring-[--leaf]"
                         >
                             <ShoppingBasket className="h-5 w-5" aria-hidden="true" />
                             {count > 0 && (
@@ -170,17 +170,17 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                             <button
                                 type="button"
                                 aria-label="Menu akun pengguna"
-                                className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[--line] bg-[--surface] text-[--ink] transition-colors hover:border-[--leaf] focus:outline-none focus:ring-2 focus:ring-[--leaf]"
+                                className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[--line] bg-background text-[--ink] transition-colors hover:border-[--leaf] focus:outline-none focus:ring-2 focus:ring-[--leaf]"
                             >
                                 <Avatar className="pointer-events-none h-8 w-8">
                                     <AvatarImage src="" alt="Avatar Profil" />
-                                    <AvatarFallback className="bg-[--surface] text-[--ink] font-medium">
+                                    <AvatarFallback className="bg-background text-[--ink] font-medium">
                                         <User className="h-4 w-4" />
                                     </AvatarFallback>
                                 </Avatar>
                             </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="z-50 w-48 border border-[--line] bg-[--surface] text-[--ink] shadow-lg">
+                        <DropdownMenuContent align="end" className="z-50 w-48 border border-[--line] bg-background text-[--ink] shadow-lg">
                             {isLoggedIn ? (
                                 <>
                                     <DropdownMenuItem className="cursor-pointer hover:bg-[--paper]">
@@ -215,7 +215,7 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                         aria-expanded={open}
                         aria-controls="mobile-menu"
                         aria-label={open ? 'Tutup menu' : 'Buka menu'}
-                        className="inline-flex min-h-10 min-w-10 items-center justify-center rounded-md border border-[--line] bg-[--surface] text-[--ink] transition-colors hover:border-[--leaf] lg:hidden"
+                        className="inline-flex min-h-10 min-w-10 items-center justify-center rounded-md border border-[--line] bg-background text-[--ink] transition-colors hover:border-[--leaf] lg:hidden"
                     >
                         {open ? (
                             <X className="h-5 w-5" aria-hidden="true" />
@@ -227,7 +227,7 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
             </div>
 
             {open && (
-                <div id="mobile-menu" className="border-t border-line bg-surface text-ink lg:hidden">
+                <div id="mobile-menu" className="border-t border-line bg-background text-ink lg:hidden">
                     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-1 px-[clamp(20px,5vw,48px)] py-4">
                         <NavLink href="/products" onClick={closeMenu}>Produk</NavLink>
                         <NavLink href="/pesanin" onClick={closeMenu}>Pesanin</NavLink>

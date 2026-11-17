@@ -10,7 +10,7 @@ export function CartPreview({ items, count }: { items: CartItem[]; count: number
     const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
 
     return (
-        <div className="absolute right-0 top-full z-50 mt-3 w-[min(23rem,calc(100vw-2rem))] rounded-xl border border-line bg-surface p-4 text-ink shadow-xl">
+        <div className="absolute right-0 top-full z-50 mt-3 w-[min(23rem,calc(100vw-2rem))] rounded-xl border border-line bg-background p-4 text-ink shadow-xl">
             <div className="flex items-center justify-between border-b border-line pb-3">
                 <div>
                     <h2 className="font-semibold">Keranjang</h2>
