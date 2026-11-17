@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Check, Plus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -94,7 +95,9 @@ export function ProductCard({
                 </div>
 
                 <h3 className="mt-2 font-display text-lg font-semibold leading-snug tracking-tight text-ink">
-                    {product.name}
+                    <Link href={`/products/${product.id}`} className="rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leaf">
+                        {product.name}
+                    </Link>
                 </h3>
                 <p className="mt-1 text-base font-semibold text-ink tabular-nums">
                     {formatRupiah(product.price)}

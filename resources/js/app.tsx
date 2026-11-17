@@ -17,6 +17,7 @@ void createInertiaApp({
             case name === 'Checkout':
             case name === 'Pesanin':
             case name === 'Products':
+            case name === 'ProductDetail':
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::get('/products', [LandingController::class, 'products'])->name('products.index');
+Route::get('/products/{product}', [LandingController::class, 'show'])->name('products.show');
 Route::get('/pesanin', function () {
     return inertia('Pesanin');
 });

@@ -25,4 +25,13 @@ class LandingController extends Controller
     {
         return inertia('Products', $this->catalogProps($orders));
     }
+
+    public function show(Product $product, OrderService $orders)
+    {
+        return inertia('ProductDetail', [
+            'product' => $product,
+            'poOpen' => $orders->isPOAvailable(now()),
+            'serverTime' => now()->toIso8601String(),
+        ]);
+    }
 }
