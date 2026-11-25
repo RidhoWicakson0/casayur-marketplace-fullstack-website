@@ -30,7 +30,9 @@ class CheckoutCalculationTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('cod_available', true)
-            ->assertJsonStructure(['distance', 'shipping' => ['ready', 'po'], 'total_shipping', 'cod_available', 'po_available']);
+            ->assertJsonPath('subtotal', 25000)
+            ->assertJsonPath('total', 25000)
+            ->assertJsonStructure(['distance', 'shipping' => ['ready', 'po'], 'total_shipping', 'subtotal', 'total', 'cod_available', 'po_available']);
     }
 
     public function test_calculate_marks_cod_unavailable_above_five_km(): void

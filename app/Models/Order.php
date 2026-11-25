@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id', 'type', 'status', 'shipping_cost'];
+    protected $fillable = ['user_id', 'type', 'status', 'shipping_cost', 'subtotal', 'total', 'method', 'payment_method', 'address', 'lat', 'lng', 'customer_name', 'customer_phone'];
 
-    protected $casts = ['shipping_cost' => 'decimal:2'];
+    protected $casts = ['shipping_cost' => 'decimal:2', 'subtotal' => 'decimal:2', 'total' => 'decimal:2'];
 
     public function items(): HasMany
     {

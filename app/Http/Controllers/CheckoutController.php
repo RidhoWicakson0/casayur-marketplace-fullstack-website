@@ -21,8 +21,8 @@ class CheckoutController extends Controller
     public function calculate(Request $request)
     {
         $data = $request->validate([
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
+            'lat' => 'nullable|numeric',
+            'lng' => 'nullable|numeric',
             'method' => 'required|in:pickup,delivery',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|integer|exists:products,id',
@@ -30,17 +30,21 @@ class CheckoutController extends Controller
         ]);
 
         $service = new OrderService();
+        if ($data['method'] === 'delivery' && (! $data['lat'] || ! $data['lng'])) {
+            return response()->json(['error' => 'Koordinat alamat delivery wajib dipilih'], 422);
+        }
         $products = Product::whereIn('id', collect($data['items'])->pluck('product_id'))
             ->get()
             ->keyBy('id');
 
+        $subtotal = collect($data['items'])->sum(fn ($item) => $products[$item['product_id']]->price * $item['qty']);
         $hasPO = $products->contains(fn ($product) => $product->category === 'po');
 
         if ($hasPO && ! $service->isPOAvailable(now())) {
             return response()->json(['error' => 'Preorder hanya tersedia jam 09.00-12.00'], 422);
         }
 
-        $distance = $this->distanceFromStore($data['lat'], $data['lng']);
+        $distance = $data['method'] === 'pickup' ? 0 : $this->distanceFromStore($data['lat'], $data['lng']);
 
         if ($distance > 20) {
             return response()->json(['error' => 'Alamat di luar radius 20km'], 422);
@@ -59,6 +63,8 @@ class CheckoutController extends Controller
             'distance' => round($distance, 2),
             'shipping' => $shipping,
             'total_shipping' => array_sum($shipping),
+            'subtotal' => $subtotal,
+            'total' => $subtotal + array_sum($shipping),
             'cod_available' => $service->codAvailable($distance),
             'po_available' => $service->isPOAvailable(now()),
         ]);
@@ -70,11 +76,18 @@ class CheckoutController extends Controller
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|integer|exists:products,id',
             'items.*.qty' => 'required|integer|min:1',
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
+            'lat' => 'nullable|numeric',
+            'lng' => 'nullable|numeric',
             'method' => 'required|in:pickup,delivery',
             'payment_method' => 'required|in:cod,manual',
+            'address' => 'required_if:method,delivery|nullable|string|max:1000',
+            'customer_name' => 'required|string|max:120',
+            'customer_phone' => 'required|string|max:30|regex:/^[0-9+\\s().-]+$/',
         ]);
+
+        if ($validated['method'] === 'delivery' && (! $validated['lat'] || ! $validated['lng'])) {
+            return back()->withErrors(['error' => 'Koordinat alamat delivery wajib dipilih']);
+        }
 
         return DB::transaction(function () use ($validated, $request) {
             $service = new OrderService();
@@ -89,7 +102,7 @@ class CheckoutController extends Controller
                 return back()->withErrors(['error' => 'Preorder hanya tersedia jam 09.00-12.00']);
             }
 
-            $distance = $this->distanceFromStore($validated['lat'], $validated['lng']);
+            $distance = $validated['method'] === 'pickup' ? 0 : $this->distanceFromStore($validated['lat'], $validated['lng']);
 
             if ($distance > 20) {
                 return back()->withErrors(['error' => 'Alamat di luar radius 20km']);
@@ -111,25 +124,31 @@ class CheckoutController extends Controller
                 }
             }
 
-            $shippingCost = 0;
-            foreach ($products->pluck('category')->unique() as $type) {
-                $group = $quantities->filter(fn ($qty, $productId) => $products[$productId]->category === $type);
+            $distance = $validated['method'] === 'pickup' ? 0 : $this->distanceFromStore($validated['lat'], $validated['lng']);
+            $shippingCost = $products->pluck('category')->unique()->sum(fn ($type) => $service->shippingCost($type, $distance, $validated['method']));
+            $subtotal = $quantities->sum(fn ($qty, $productId) => $products[$productId]->price * $qty);
+            $order = Order::create([
+                'user_id' => $request->user()?->id,
+                'type' => $products->contains(fn ($product) => $product->category === 'po') ? 'po' : 'ready',
+                'status' => 'pending',
+                'shipping_cost' => $shippingCost,
+                'subtotal' => $subtotal,
+                'total' => $subtotal + $shippingCost,
+                'method' => $validated['method'],
+                'payment_method' => $validated['payment_method'],
+                'address' => $validated['address'] ?? null,
+                'lat' => $validated['lat'],
+                'lng' => $validated['lng'],
+                'customer_name' => $validated['customer_name'],
+                'customer_phone' => $validated['customer_phone'],
+            ]);
 
-                
-                $order = Order::create([
-                    'user_id' => $request->user()?->id,
-                    'type' => $type,
-                    'status' => 'pending',
-                    'shipping_cost' => $shippingCost,
+            foreach ($quantities as $productId => $qty) {
+                $order->items()->create([
+                    'product_id' => $productId,
+                    'quantity' => $qty,
+                    'price' => $products[$productId]->price,
                 ]);
-
-                foreach ($group as $productId => $qty) {
-                    $order->items()->create([
-                        'product_id' => $productId,
-                        'quantity' => $qty,
-                        'price' => $products[$productId]->price,
-                    ]);
-                }
             }
 
             foreach ($quantities as $productId => $qty) {

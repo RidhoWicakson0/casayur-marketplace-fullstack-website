@@ -12,7 +12,8 @@ class ProductManagementTest extends TestCase
 
     public function test_admin_can_create_a_product(): void
     {
-        $this->actingAs(\App\Models\User::factory()->create()); // Asumsi factory ada
+        $this->actingAs(\App\Models\User::factory()->create(['email' => 'admin@example.com', 'role' => 'admin']));
+        config(['casayur.admin_emails' => ['admin@example.com']]);
 
         $response = $this->post(route('admin.products.store'), [
             'name' => 'Sayur Bayam',

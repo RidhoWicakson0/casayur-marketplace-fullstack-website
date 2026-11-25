@@ -1,6 +1,6 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Check, Plus } from 'lucide-react';
+import { Check, ShoppingCart } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useCart } from '@/contexts/cart-context';
@@ -21,6 +21,7 @@ export function ProductCard({
     poOpen: boolean;
     index: number;
 }) {
+    const { auth } = usePage().props as { auth?: { user?: { role?: string } } };
     const reduceMotion = useReducedMotion();
     const { addItem } = useCart();
     const [added, setAdded] = useState(false);
@@ -39,6 +40,11 @@ export function ProductCard({
 
     const handleAdd = () => {
         if (disabled) {
+            return;
+        }
+
+        if (!auth?.user || auth.user.role !== 'customer') {
+            window.location.href = `/auth/google/action/${product.id}/cart`;
             return;
         }
 
@@ -74,7 +80,7 @@ export function ProductCard({
                         product.category === 'po' ? 'text-turmeric' : 'text-leaf',
                     )}
                 >
-                    <ProduceMark kind={kind} className="h-20 w-20" />
+                    {product.image_url ? <img src={product.image_url} alt="" className="h-full w-full object-cover" /> : <ProduceMark kind={kind} className="h-20 w-20" />}
                     <span className="absolute inset-x-3 bottom-3 rounded-lg bg-ink/90 px-3 py-2 text-center text-xs font-semibold text-paper opacity-0 transition-opacity duration-200 group-hover/detail:opacity-100 group-focus-within:opacity-100">
                         Lihat detail
                     </span>
@@ -118,7 +124,7 @@ export function ProductCard({
                         onClick={handleAdd}
                         disabled={disabled}
                         className={cn(
-                            'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors',
+                            'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leaf focus-visible:ring-offset-2',
                             disabled
                                 ? 'cursor-not-allowed bg-paper text-muted-ink'
                                 : 'bg-leaf text-white hover:bg-leaf-deep',
@@ -127,7 +133,7 @@ export function ProductCard({
                         {added ? (
                             <Check className="h-4 w-4" aria-hidden="true" />
                         ) : (
-                            <Plus className="h-4 w-4" aria-hidden="true" />
+                            <ShoppingCart className="h-4 w-4" aria-hidden="true" />
                         )}
                         {added ? 'Ditambahkan' : 'Tambah ke keranjang'}
                     </button>

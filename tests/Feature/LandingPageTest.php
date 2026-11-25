@@ -25,4 +25,21 @@ class LandingPageTest extends TestCase
             ->has('serverTime')
         );
     }
+
+    public function test_landing_page_shares_authenticated_user_in_props(): void
+    {
+        $user = \App\Models\User::factory()->create([
+            'name' => 'Budi Santoso',
+            'role' => 'customer',
+        ]);
+
+        $response = $this->actingAs($user)->get(route('home'));
+
+        $response->assertOk();
+        $response->assertInertia(fn ($page) => $page
+            ->where('auth.user.id', $user->id)
+            ->where('auth.user.name', 'Budi Santoso')
+            ->where('auth.user.role', 'customer')
+        );
+    }
 }

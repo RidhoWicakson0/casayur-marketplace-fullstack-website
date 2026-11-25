@@ -43,7 +43,7 @@ export default function Products({ products = [], poOpen = false }: { products?:
         <>
             <Head title="Produk" />
             <SiteHeader poOpen={poOpen} />
-            <main className="min-h-screen bg-paper text-ink">
+            <main className="min-h-screen bg-[--ink] text-[--paper]">
                 <section className="mx-auto w-full max-w-[1200px] px-[clamp(20px,5vw,48px)] py-16 sm:py-24">
                     <div className="max-w-2xl">
                         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-leaf">Etalase Casayur</p>
@@ -66,10 +66,10 @@ export default function Products({ products = [], poOpen = false }: { products?:
                             <button type="button" onClick={() => setInStock((value) => !value)} className={cn('inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors', inStock ? 'bg-leaf text-white' : 'bg-surface text-muted-ink hover:text-ink')}>
                                 <SlidersHorizontal className="h-4 w-4" aria-hidden="true" /> Stok tersedia
                             </button>
-                            <select value={sort} onChange={(event) => setSort(event.target.value as Sort)} aria-label="Urutkan produk" className="h-10 rounded-lg border border-line bg-surface px-3 text-sm text-ink outline-none focus:border-leaf">
-                                <option value="featured">Unggulan</option>
-                                <option value="low">Harga terendah</option>
-                                <option value="high">Harga tertinggi</option>
+                            <select value={sort} onChange={(event) => setSort(event.target.value as Sort)} aria-label="Urutkan produk" className="h-10 rounded-lg border border-line bg-surface px-3 text-sm text-ink outline-none focus:border-leaf color-scheme-light-dark">
+                                <option className="bg-surface text-ink" value="featured">Unggulan</option>
+                                <option className="bg-surface text-ink" value="low">Harga terendah</option>
+                                <option className="bg-surface text-ink" value="high">Harga tertinggi</option>
                             </select>
                         </div>
                     </div>

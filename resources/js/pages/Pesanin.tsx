@@ -4,7 +4,7 @@ import { SiteFooter } from '@/components/casayur/site-footer';
 import { ShoppingBasket, MessageCircle, Truck, PackageCheck } from 'lucide-react';
 
 export default function Pesanin() {
-    const waNumber = '628123456789'; // Ganti dengan nomor WA asli
+    const waNumber = '6283141267423'; // Ganti dengan nomor WA asli
     const waUrl = `https://wa.me/${waNumber}?text=Halo%20Casayur%2C%20saya%20ingin%20memesan%20belanjaan.`;
 
     const steps = [
@@ -18,7 +18,7 @@ export default function Pesanin() {
         <>
             <Head title="Pesanin - Belanja Langsung di Pasar" />
             <SiteHeader />
-            <main className="min-h-screen bg-paper text-ink pt-20">
+            <main className="min-h-screen bg-[--ink] pt-20 text-[--paper]">
                 <div className="mx-auto max-w-4xl px-4 py-16 text-center">
                     <h1 className="font-display text-5xl font-bold tracking-tight mb-6">Pesanin: Belanja Pasar Langsung</h1>
                     <p className="text-xl text-muted-ink mb-10 max-w-2xl mx-auto">

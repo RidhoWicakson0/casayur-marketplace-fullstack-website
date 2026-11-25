@@ -5,6 +5,7 @@ import { CartProvider } from '@/contexts/cart-context';
 import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
+import AdminLayout from '@/layouts/admin-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -18,9 +19,16 @@ void createInertiaApp({
             case name === 'Pesanin':
             case name === 'Products':
             case name === 'ProductDetail':
+            case name === 'Profile':
+            case name === 'History':
+            case name === 'auth/login':
+            case name === 'auth/register':
+            case name === 'auth/admin-login':
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
+            case name.startsWith('Admin/'):
+                return AdminLayout;
             case name.startsWith('settings/'):
             case name.startsWith('teams/'):
                 return [AppLayout, SettingsLayout];

@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
     Leaf,
@@ -95,13 +95,24 @@ function NavLink({
     );
 }
 
-export function SiteHeader({ poOpen }: { poOpen: boolean }) {
+export function SiteHeader({ poOpen = false }: { poOpen?: boolean }) {
     const reduceMotion = useReducedMotion();
     const [open, setOpen] = useState(false);
     const { items, count } = useCart();
-    
-    // Dummy state for auth
-    const [isLoggedIn] = useState(false); 
+    const { auth } = usePage().props as {
+        auth?: {
+            user?: {
+                id?: number;
+                name?: string;
+                email?: string;
+                role?: string;
+                avatar?: string | null;
+                avatar_url?: string | null;
+            } | null;
+        };
+    };
+    const user = auth?.user;
+    const isLoggedIn = Boolean(user);
 
     useEffect(() => {
         if (!open) {
@@ -155,7 +166,7 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                         >
                             <ShoppingBasket className="h-5 w-5" aria-hidden="true" />
                             {count > 0 && (
-                                <span className="absolute -top-1 -right-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[--leaf] px-1 text-[10px] font-semibold text-white tabular-nums">
+                                <span key={count} aria-hidden="true" className="absolute -top-1 -right-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[--leaf] px-1 text-[10px] font-semibold text-white tabular-nums">
                                     {count}
                                 </span>
                             )}
@@ -173,25 +184,43 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                                 className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[--line] bg-background text-[--ink] transition-colors hover:border-[--leaf] focus:outline-none focus:ring-2 focus:ring-[--leaf]"
                             >
                                 <Avatar className="pointer-events-none h-8 w-8">
-                                    <AvatarImage src="" alt="Avatar Profil" />
-                                    <AvatarFallback className="bg-background text-[--ink] font-medium">
-                                        <User className="h-4 w-4" />
+                                    <AvatarImage src={user?.avatar_url || ''} alt={user?.name || "Avatar Profil"} />
+                                    <AvatarFallback className="bg-background text-[--ink] font-medium text-xs">
+                                        {user?.name ? user.name.slice(0, 2).toUpperCase() : <User className="h-4 w-4" />}
                                     </AvatarFallback>
                                 </Avatar>
                             </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="z-50 w-48 border border-[--line] bg-background text-[--ink] shadow-lg">
+                        <DropdownMenuContent align="end" className="z-50 w-56 border border-[--line] bg-background text-[--ink] shadow-lg">
                             {isLoggedIn ? (
                                 <>
-                                    <DropdownMenuItem className="cursor-pointer hover:bg-[--paper]">
-                                        <Settings className="mr-2 h-4 w-4" />
-                                        <span>Edit Profil</span>
+                                    <div className="border-b border-[--line] px-3 py-2 text-xs">
+                                        <p className="font-semibold text-[--ink] truncate">{user?.name}</p>
+                                        <p className="text-[--muted-ink] truncate">{user?.email}</p>
+                                    </div>
+                                    {user?.role === 'admin' && (
+                                        <DropdownMenuItem asChild className="cursor-pointer hover:bg-[--paper]">
+                                            <Link href="/admin" className="flex w-full items-center font-medium text-leaf">
+                                                <span>Panel Admin</span>
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    )}
+                                    <DropdownMenuItem asChild className="cursor-pointer hover:bg-[--paper]">
+                                        <Link href="/profile" className="flex w-full items-center">
+                                            <Settings className="mr-2 h-4 w-4" />
+                                            <span>Edit Profil</span>
+                                        </Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="cursor-pointer hover:bg-[--paper]">
-                                        <History className="mr-2 h-4 w-4" />
-                                        <span>History Belanja</span>
+                                    <DropdownMenuItem asChild className="cursor-pointer hover:bg-[--paper]">
+                                        <Link href="/history" className="flex w-full items-center">
+                                            <History className="mr-2 h-4 w-4" />
+                                            <span>Riwayat Pesanan</span>
+                                        </Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="cursor-pointer text-danger hover:bg-[--paper]">
+                                    <DropdownMenuItem
+                                        onClick={() => router.post('/logout')}
+                                        className="cursor-pointer text-danger hover:bg-[--paper] flex w-full items-center"
+                                    >
                                         <LogOut className="mr-2 h-4 w-4" />
                                         <span>Logout</span>
                                     </DropdownMenuItem>
@@ -242,9 +271,22 @@ export function SiteHeader({ poOpen }: { poOpen: boolean }) {
                         <div className="mt-2 border-t border-[--line] pt-3 flex flex-col gap-2">
                              {isLoggedIn ? (
                                 <>
+                                    <div className="px-3 py-1">
+                                        <p className="text-sm font-semibold">{user?.name}</p>
+                                        <p className="text-xs text-[--muted-ink]">{user?.email}</p>
+                                    </div>
+                                    {user?.role === 'admin' && (
+                                        <NavLink href="/admin" onClick={closeMenu}>Panel Admin</NavLink>
+                                    )}
                                     <NavLink href="/profile" onClick={closeMenu}>Edit Profil</NavLink>
-                                    <NavLink href="/history" onClick={closeMenu}>History Belanja</NavLink>
-                                    <button className="text-left px-3 text-sm font-medium text-danger">Logout</button>
+                                    <NavLink href="/history" onClick={closeMenu}>Riwayat Pesanan</NavLink>
+                                    <button
+                                        type="button"
+                                        onClick={() => { closeMenu(); router.post('/logout'); }}
+                                        className="text-left px-3 text-sm font-medium text-danger"
+                                    >
+                                        Logout
+                                    </button>
                                 </>
                             ) : (
                                 <>

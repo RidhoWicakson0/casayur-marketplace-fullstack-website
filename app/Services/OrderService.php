@@ -17,10 +17,11 @@ class OrderService
             return 0;
         }
 
-        $freeKm = $category === 'ready' ? 3.0 : 5.0;
-        $excessKm = max(0, $distanceKm - $freeKm);
+        if ($distanceKm <= 5.0) {
+            return 0;
+        }
 
-        return (int) round($excessKm * 2000);
+        return (int) (ceil($distanceKm) * 2000);
     }
 
     public function codAvailable(float $distanceKm): bool

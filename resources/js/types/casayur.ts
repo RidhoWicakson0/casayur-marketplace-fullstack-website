@@ -6,6 +6,8 @@ export type Product = {
     category: ProductCategory;
     price: number;
     stock: number;
+    description?: string | null;
+    image_url?: string | null;
 };
 
 export type CartItem = {

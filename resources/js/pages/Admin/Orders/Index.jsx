@@ -3,11 +3,11 @@ import { useForm } from '@inertiajs/react';
 
 export default function Index({ orders = [] }) {
     return (
-        <div className="max-w-6xl mx-auto p-8">
+        <div className="min-h-screen max-w-6xl mx-auto bg-[--ink] p-8 text-[--paper]">
             <h1 className="text-2xl font-bold mb-6">Dashboard Pesanan</h1>
-            <div className="bg-white rounded border overflow-hidden">
+            <div className="overflow-hidden rounded border border-[--line] bg-[--surface]">
                 <table className="w-full text-sm">
-                    <thead className="bg-slate-100">
+                    <thead className="bg-[--surface]">
                         <tr>
                             <th className="p-3 text-left">ID</th>
                             <th className="p-3 text-left">Tipe</th>
@@ -16,9 +16,9 @@ export default function Index({ orders = [] }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {orders.length === 0 ? (
+                        {(orders.data ?? orders).length === 0 ? (
                             <tr><td colSpan="4" className="p-6 text-center text-slate-500">Belum ada pesanan.</td></tr>
-                        ) : orders.map((order) => (
+                        ) : (orders.data ?? orders).map((order) => (
                             <OrderRow key={order.id} order={order} />
                         ))}
                     </tbody>
@@ -33,7 +33,7 @@ function OrderRow({ order }) {
 
     const updateStatus = (event) => {
         form.setData('status', event.target.value);
-        form.patch(route('admin.orders.status', order.id));
+        form.patch(`/admin/orders/${order.id}/status`);
     };
 
     return (
@@ -42,11 +42,11 @@ function OrderRow({ order }) {
             <td className="p-3 uppercase">{order.type}</td>
             <td className="p-3">{order.status}</td>
             <td className="p-3">
-                <select value={form.data.status} onChange={updateStatus} disabled={form.processing} className="border rounded p-1">
-                    <option value="pending">Pending</option>
-                    <option value="processing">Diproses</option>
-                    <option value="completed">Selesai</option>
-                    <option value="cancelled">Dibatalkan</option>
+                <select value={form.data.status} onChange={updateStatus} disabled={form.processing} className="rounded border border-[--line] bg-[--surface] p-2 text-[--ink] color-scheme-light-dark">
+                    <option className="bg-[--surface] text-[--ink]" value="pending">Pending</option>
+                    <option className="bg-[--surface] text-[--ink]" value="processing">Diproses</option>
+                    <option className="bg-[--surface] text-[--ink]" value="completed">Selesai</option>
+                    <option className="bg-[--surface] text-[--ink]" value="cancelled">Dibatalkan</option>
                 </select>
             </td>
         </tr>

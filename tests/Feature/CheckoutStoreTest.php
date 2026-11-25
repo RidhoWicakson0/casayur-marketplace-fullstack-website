@@ -22,6 +22,10 @@ class CheckoutStoreTest extends TestCase
                 'lng' => 106.8166,
                 'method' => 'pickup',
                 'payment_method' => 'manual',
+            'customer_name' => 'Budi',
+            'customer_phone' => '081234567890',
+                'customer_name' => 'Budi',
+                'customer_phone' => '081234567890',
                 'items' => [['product_id' => $po->id, 'qty' => 1]],
             ]);
         });
@@ -38,7 +42,10 @@ class CheckoutStoreTest extends TestCase
             'lat' => -6.2600,
             'lng' => 106.8166,
             'method' => 'delivery',
+                'address' => 'Jl. Sayur 1',
             'payment_method' => 'cod',
+            'customer_name' => 'Budi',
+            'customer_phone' => '081234567890',
             'items' => [['product_id' => $ready->id, 'qty' => 1]],
         ]);
 
@@ -54,7 +61,10 @@ class CheckoutStoreTest extends TestCase
             'lat' => -6.2100,
             'lng' => 106.8166,
             'method' => 'delivery',
+                'address' => 'Jl. Sayur 1',
             'payment_method' => 'manual',
+            'customer_name' => 'Budi',
+            'customer_phone' => '081234567890',
             'items' => [['product_id' => $ready->id, 'qty' => 2, 'price' => 1]],
         ]);
 
@@ -71,7 +81,10 @@ class CheckoutStoreTest extends TestCase
             'lat' => -6.2100,
             'lng' => 106.8166,
             'method' => 'delivery',
+                'address' => 'Jl. Sayur 1',
             'payment_method' => 'manual',
+            'customer_name' => 'Budi',
+            'customer_phone' => '081234567890',
             'items' => [['product_id' => $ready->id, 'qty' => 2]],
         ]);
 
